@@ -1,0 +1,15 @@
+##{$name-space} {
+  button {
+    background-color: $color-2;
+    border: 1px solid $color-2;
+    border-radius: 0.25rem;
+    color: $color-1;
+    padding: 0.375rem 0.75rem;
+
+    &:focus,
+    &:hover {
+      background-color: darken($color-2, 10%);
+      border-color: darken($color-2, 10%);
+    }
+  }
+}

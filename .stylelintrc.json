@@ -1,0 +1,39 @@
+{
+  "extends": "stylelint-config-sass-guidelines",
+  "rules": {
+    "max-nesting-depth": [
+      13
+    ],
+    "property-no-unknown": [
+      true,
+      {
+        "ignoreProperties": [
+          "box-orient"
+        ]
+      }
+    ],
+    "selector-max-compound-selectors": [
+      10
+    ],
+    "selector-max-id": 8,
+    "selector-no-qualifying-type": [
+      true,
+      {
+        "ignore": [
+          "attribute",
+          "class",
+          "id"
+        ]
+      }
+    ],
+    "selector-pseudo-element-no-unknown": [
+      true,
+      {
+        "ignorePseudoElements": [
+          "ng-deep"
+        ]
+      }
+    ],
+    "string-quotes": "double"
+  }
+}
