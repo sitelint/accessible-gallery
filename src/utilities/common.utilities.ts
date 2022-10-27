@@ -24,6 +24,7 @@ export class CommonUtilities {
 
     for (let i: number = 0; i < len; i += 1) {
       zIndex = window.getComputedStyle(elms[i], null).getPropertyValue('z-index');
+
       if (zIndex !== null && zIndex !== 'auto') {
         zIndexes.push(Number(zIndex));
       }

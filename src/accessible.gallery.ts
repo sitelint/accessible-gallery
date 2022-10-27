@@ -51,7 +51,7 @@ export class AccessibleGallery {
 
   private handleClickOutside(event: Event) {
     if (event.type === 'keydown') {
-      if ((typeof (event as KeyboardEvent).key === 'string' && (event as KeyboardEvent).key !== 'Escape') || (typeof (event as KeyboardEvent).code === 'string' && (event as KeyboardEvent).code !== 'Escape') || (typeof (event as KeyboardEvent).keyCode === 'number' && (event as KeyboardEvent).keyCode !== 27)) {
+      if ((typeof (event as KeyboardEvent).key === 'string' && (event as KeyboardEvent).key !== 'Escape') || (typeof (event as KeyboardEvent).code === 'string' && (event as KeyboardEvent).code !== 'Escape')) {
         return;
       }
 
@@ -214,7 +214,7 @@ export class AccessibleGallery {
     const target = event.target;
 
     if (event.type === 'keydown') {
-      if ((typeof (event as KeyboardEvent).key === 'string' && (event as KeyboardEvent).key !== 'Escape') || (typeof (event as KeyboardEvent).code === 'string' && (event as KeyboardEvent).code !== 'Escape') || (typeof (event as KeyboardEvent).keyCode === 'number' && (event as KeyboardEvent).keyCode !== 27)) {
+      if ((typeof (event as KeyboardEvent).key === 'string' && (event as KeyboardEvent).key !== 'Escape') || (typeof (event as KeyboardEvent).code === 'string' && (event as KeyboardEvent).code !== 'Escape')) {
         return;
       }
     }
@@ -423,8 +423,7 @@ export class AccessibleGallery {
   private handleKeyboardAction(event: KeyboardEvent) {
     if (
       (typeof event.code === 'string' && event.code === 'ArrowRight') ||
-      (typeof event.key === 'string' && event.key === 'ArrowRight') ||
-      (typeof event.keyCode === 'number' && event.keyCode === 39)
+      (typeof event.key === 'string' && event.key === 'ArrowRight')
     ) {
       this.getNextImage();
       event.preventDefault();
@@ -434,8 +433,7 @@ export class AccessibleGallery {
 
     if (
       (typeof event.code === 'string' && event.code === 'ArrowLeft') ||
-      (typeof event.key === 'string' && event.key === 'ArrowLeft') ||
-      (typeof event.keyCode === 'number' && event.keyCode === 37)
+      (typeof event.key === 'string' && event.key === 'ArrowLeft')
     ) {
       this.getPreviousImage();
       event.preventDefault();
