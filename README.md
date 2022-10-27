@@ -60,6 +60,7 @@ npm install @sitelintcode/accessible-gallery --save
 2. While loading the image the message is being displayed to give a feedback when loading image takes more than 1 second. The message appears with 1 second delay to avoid "blinking" when the image is loaded faster than 1 second.
 3. The gallery should be fully responsive and adapt to all viewport sizes.
 4. Gallery supports [base64 encoded images](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URLs). Example: `src="data:image/png;base64,..."`.
+5. The left/right swipe gesture is supported. Very useful on mobile devices.
 
 ### Technical
 
