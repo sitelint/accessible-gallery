@@ -1,6 +1,6 @@
 # Accessible Gallery
 
-Accessible Gallery allows you to create image gallery automatically directly from the HTML.
+Accessible Gallery allows you to create an image gallery automatically directly from the HTML.
 
 ## Demo
 
