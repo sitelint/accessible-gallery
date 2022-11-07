@@ -81,11 +81,15 @@
   },
   "keywords": [
     "accessible",
-    "modal",
-    "gallery",
-    "ui",
     "component",
-    "swipe"
+    "embeddable",
+    "gallery",
+    "image",
+    "layout",
+    "lightbox",
+    "modal",
+    "swipe",
+    "ui"
   ],
   "bugs": {
     "url": "https://github.com/sitelint/accessible-gallery/issues"
