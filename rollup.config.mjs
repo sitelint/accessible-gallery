@@ -16,7 +16,8 @@ const defaults = {
 };
 const override = {
   compilerOptions: {
-    declaration: false, module: 'es6'
+    declaration: false,
+    module: 'es6'
   }
 };
 

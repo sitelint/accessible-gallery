@@ -1,5 +1,5 @@
 .accessible-gallery-modal {
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.85);
   height: 100vh;
   left: 0;
   position: fixed;
@@ -56,7 +56,7 @@
     right: 4px;
     top: 4px;
 
-    :root(html[dir='ltr']) {
+    @include rtl {
       left: 4px;
       right: initial;
     }
