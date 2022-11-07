@@ -45,7 +45,7 @@ npm install @sitelintcode/accessible-gallery --save
 3. Use:
 
 ```javascript
-  import { AccessibleGallery } from '@sitelint/accessible-gallery';
+  import AccessibleGallery from '@sitelint/accessible-gallery';
 
   const accessibleGallery = new AccessibleGallery();
 
