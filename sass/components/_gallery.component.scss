@@ -129,14 +129,14 @@
       white-space: pre-line;
       z-index: -1;
 
-      &:empty {
-        display: none;
-      }
-
       @include media-breakpoint-up(md) {
         @include center(true, false);
         bottom: 2rem;
         top: auto;
+      }
+
+      &:empty {
+        display: none;
       }
     }
   }

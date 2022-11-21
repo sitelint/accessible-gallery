@@ -2,13 +2,13 @@
   @at-root & {
     @content;
   }
-  @at-root [dir='ltr'] & {
+  @at-root [dir="ltr"] & {
     @content;
   }
 }
 
 @mixin rtl() {
-  @at-root [dir='rtl'] & {
+  @at-root [dir="rtl"] & {
     @content;
   }
 }
