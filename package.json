@@ -38,16 +38,16 @@
   },
   "private": false,
   "dependencies": {
-    "bootstrap": "5.2.2",
+    "bootstrap": "5.2.3",
     "keycode-js": "3.1.0",
-    "swiped-events": "1.1.6"
+    "swiped-events": "1.1.7"
   },
   "devDependencies": {
-    "@types/node": "18.11.9",
+    "@types/node": "18.11.10",
     "@types/sharp": "0.31.0",
-    "@typescript-eslint/eslint-plugin": "5.43.0",
-    "@typescript-eslint/parser": "5.43.0",
-    "bootstrap": "5.2.2",
+    "@typescript-eslint/eslint-plugin": "5.45.0",
+    "@typescript-eslint/parser": "5.45.0",
+    "bootstrap": "5.2.3",
     "chokidar-cli": "3.0.0",
     "copyfiles": "2.4.1",
     "dateformat": "5.0.3",
@@ -59,7 +59,7 @@
     "husky": "8.0.2",
     "markdownlint-cli": "0.32.2",
     "release-it": "15.5.0",
-    "rollup": "3.3.0",
+    "rollup": "3.5.1",
     "rollup-plugin-commonjs": "10.1.0",
     "rollup-plugin-dts": "5.0.0",
     "rollup-plugin-html": "0.2.1",
