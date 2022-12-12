@@ -25,8 +25,15 @@ const config = {
   input: 'src/accessible.gallery.ts',
   output: [
     {
+      exports: 'auto',
       file: './dist/accessible.gallery.bundle.js',
-      format: 'umd',
+      format: 'cjs',
+      name: 'accessible.gallery'
+    },
+    {
+      exports: 'auto',
+      file: './dist/accessible.gallery.bundle.esm.js',
+      format: 'esm',
       name: 'accessible.gallery'
     }
   ],
@@ -69,7 +76,7 @@ const config = {
 const tsDeclarationsConfig = {
   input: './src/accessible.gallery.ts',
   output: [{
-    file: 'dist/index.d.ts',
+    file: 'dist/accessible.gallery.d.ts',
     format: 'es'
   }],
   plugins: [
