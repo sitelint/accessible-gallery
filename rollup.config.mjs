@@ -27,13 +27,7 @@ const config = {
     {
       exports: 'auto',
       file: './dist/accessible.gallery.bundle.js',
-      format: 'cjs',
-      name: 'accessible.gallery'
-    },
-    {
-      exports: 'auto',
-      file: './dist/accessible.gallery.bundle.esm.js',
-      format: 'esm',
+      format: 'umd',
       name: 'accessible.gallery'
     }
   ],
