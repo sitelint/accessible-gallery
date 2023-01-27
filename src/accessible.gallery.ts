@@ -4,7 +4,7 @@ import styles from '../dist/styles.bundle.css';
 import { IAccessibleGalleryConfig } from './interfaces/gallery.interfaces';
 import { CommonUtilities } from './utilities/common.utilities';
 
-export class AccessibleGallery {
+export default class AccessibleGallery {
   private restoreFocusToElement!: HTMLElement;
   private previousButton!: HTMLElement;
   private nextButton!: HTMLElement;

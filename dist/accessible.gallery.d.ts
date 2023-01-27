@@ -46,4 +46,4 @@ declare class AccessibleGallery {
     init(): void;
 }
 
-export { AccessibleGallery };
+export { AccessibleGallery as default };
