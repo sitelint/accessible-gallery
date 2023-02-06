@@ -95,13 +95,18 @@
       transform: translate(-50%, -50%);
       width: 98%;
 
-      @include media-breakpoint-up(md) {
+      @include media-breakpoint-up(lg) {
         height: 90%;
         width: auto;
 
         @supports (width: max-content) {
           width: max-content;
         }
+      }
+
+      @include media-breakpoint-only(md) {
+        height: auto;
+        width: 90%;
       }
 
       img {
