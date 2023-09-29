@@ -40,8 +40,14 @@ export default class AccessibleGallery {
       previousImage: 'Previous'
     };
 
+    const customConfig: string | null = this.galleryContainer.getAttribute('data-accessible-gallery-config');
+
+    if (customConfig === null) {
+      return galleryConfig;
+    }
+
     try {
-      galleryConfig = JSON.parse(this.galleryContainer.getAttribute('data-accessible-gallery-config')!);
+      galleryConfig = JSON.parse(customConfig);
     } catch (e) {
       return galleryConfig;
     }
@@ -155,7 +161,7 @@ export default class AccessibleGallery {
     this.imageReference?.remove();
     this.imageReference = document.createElement('img');
     this.imageReference.id = 'accessible_gallery_image';
-    this.imageReference.alt = alt === null ? '' : alt;
+    this.imageReference.alt = alt ?? '';
     this.imageReference.src = isInlineImage ? linkThumbnail.src : link.href;
 
     this.modalInnerContainerWithImage.appendChild(this.imageReference);
@@ -191,7 +197,7 @@ export default class AccessibleGallery {
     this.imageReference?.remove();
     this.imageReference = document.createElement('img');
     this.imageReference.id = 'accessible_gallery_image';
-    this.imageReference.alt = alt === null ? '' : alt;
+    this.imageReference.alt = alt ?? '';
     this.imageReference.src = this.isInlineImage(linkThumbnail.src) ? linkThumbnail.src : link.href;
 
     this.modalInnerContainerWithImage.appendChild(this.imageReference);
@@ -370,7 +376,7 @@ export default class AccessibleGallery {
     const isInlineImage: boolean = this.isInlineImage(thumbnailImage.src);
 
     this.imageReference.id = 'accessible_gallery_image';
-    this.imageReference.alt = alt === null ? '' : alt;
+    this.imageReference.alt = alt ?? '';
     this.imageReference.src = isInlineImage ? thumbnailImage.src : target.href;
 
     this.modalInnerContainerWithImage.appendChild(this.imageReference);
