@@ -6,6 +6,7 @@ declare class AccessibleGallery {
     private closeModalButton;
     private modalInnerContainer;
     private modalInnerContainerWithImage;
+    private modalInnerContainerWithThumbnails;
     private loadingMessageContainer;
     private showLoadingMessageTimeout;
     private galleryContainer;

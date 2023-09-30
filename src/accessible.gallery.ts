@@ -12,6 +12,7 @@ export default class AccessibleGallery {
   private closeModalButton!: HTMLButtonElement;
   private modalInnerContainer!: Element;
   private modalInnerContainerWithImage!: Element;
+  private modalInnerContainerWithThumbnails!: Element;
   private loadingMessageContainer!: HTMLElement;
   private showLoadingMessageTimeout: number | undefined;
 
@@ -348,7 +349,7 @@ export default class AccessibleGallery {
 
     this.restoreFocusToElement = target;
 
-    modalDialog.innerHTML = '<h2 class="visually-hidden" id="accessible_gallery_heading"></h2><div id="accessible_gallery_actions" class="accessible-gallery-modal__actions" tabindex="-1"><button type="button" class="accessible-gallery-modal__previous-image" id="accessible_gallery_modal_previous_image"></button><button type="button" class="accessible-gallery-modal__next-image" id="accessible_gallery_modal_next_image"></button></div><div id="accessible_gallery_modal_inner_container" class="accessible-gallery-modal__inner-container"><div id="accessible_gallery_modal_inner_with_image" class="accessible-gallery-modal__inner-container__image"></div></div>';
+    modalDialog.innerHTML = '<h2 class="visually-hidden" id="accessible_gallery_heading"></h2><div id="accessible_gallery_actions" class="accessible-gallery-modal__actions" tabindex="-1"><button type="button" class="accessible-gallery-modal__previous-image" id="accessible_gallery_modal_previous_image"><span><small class="visually-hidden"></small></span></button><button type="button" class="accessible-gallery-modal__next-image" id="accessible_gallery_modal_next_image"><span><small class="visually-hidden"></small></span></button></div><div id="accessible_gallery_modal_inner_container" class="accessible-gallery-modal__inner-container"><div id="accessible_gallery_modal_inner_with_image" class="accessible-gallery-modal__inner-container__image"></div><div id="accessible_gallery_modal_inner_with_thumbnails" class="accessible-gallery-modal__inner-container__thumbnails"></div></div>';
 
     modalDialog.id = 'accessible_gallery_modal';
     modalDialog.className = 'accessible-gallery-modal';
@@ -370,6 +371,7 @@ export default class AccessibleGallery {
 
     this.modalInnerContainer = modalDialog.querySelector('#accessible_gallery_modal_inner_container')!;
     this.modalInnerContainerWithImage = modalDialog.querySelector('#accessible_gallery_modal_inner_with_image')!;
+    this.modalInnerContainerWithThumbnails = modalDialog.querySelector('#accessible_gallery_modal_inner_with_thumbnails')!;
     this.imageReference = document.createElement('img');
 
     const alt: string | null = thumbnailImage.getAttribute('alt');
@@ -388,16 +390,35 @@ export default class AccessibleGallery {
         once: true
       });
 
+    const thumbnails: HTMLImageElement[] = Array.from(this.galleryContainer.querySelectorAll('[data-accessible-gallery-thumbnail]'));
+    let thumbnailsList: string = '<ul>';
+
+    const createThumbnail = (image: HTMLImageElement) => {
+      const thumbnailSrc: string | null = image.getAttribute('data-accessible-gallery-thumbnail');
+
+      if (thumbnailSrc === null) {
+        return;
+      }
+
+      thumbnailsList += `<li><img src="${thumbnailSrc}" alt="${image.alt} thumbnail"></li>`;
+    };
+
+    thumbnails.forEach(createThumbnail);
+
+    thumbnailsList += '</ul>';
+
+    this.modalInnerContainerWithThumbnails.insertAdjacentHTML('afterbegin', thumbnailsList);
+
     this.createLoadingMessageContainer();
     this.createLoadingMessage(this.imageReference.alt, isInlineImage);
 
     const galleryConfig: IAccessibleGalleryConfig = this.getGalleryConfig();
 
     this.previousButton = modalDialog.querySelector('#accessible_gallery_modal_previous_image')!;
-    this.previousButton.textContent = galleryConfig.previousImage;
+    this.previousButton.querySelector('small')!.textContent = galleryConfig.previousImage;
 
     this.nextButton = modalDialog.querySelector('#accessible_gallery_modal_next_image')!;
-    this.nextButton.textContent = galleryConfig.nextImage;
+    this.nextButton.querySelector('small')!.textContent = galleryConfig.nextImage;
 
     if (existingModalDialog) {
       existingModalDialog.remove();
@@ -408,7 +429,7 @@ export default class AccessibleGallery {
     this.closeModalButton.type = 'button';
     this.closeModalButton.id = 'accessible_gallery_modal_close_button';
     this.closeModalButton.className = 'accessible-gallery-modal__close-button';
-    this.closeModalButton.innerHTML = `<span class="visually-hidden">${galleryConfig.closeButtonMessage}</span><svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 268.29 268.29" with="24" height="24"><defs><filter id="a" height="1.36" width="1.36" color-interpolation-filters="sRGB" y="-.18" x="-.18"><feGaussianBlur stdDeviation="13.714"/></filter></defs><g stroke-linejoin="round" stroke="#000" stroke-linecap="round"><path d="M268.57 149.51c0 50.495-40.934 91.429-91.429 91.429s-91.429-40.934-91.429-91.429 40.934-91.429 91.429-91.429 91.429 40.934 91.429 91.429z" transform="translate(-43 -15.362)" color="#000" filter="url(#a)" stroke-width="19.6" fill="#fff"/><path d="M223.57 132.148c0 50.495-40.934 91.429-91.429 91.429s-91.429-40.934-91.429-91.429 40.934-91.429 91.429-91.429 91.429 40.934 91.429 91.429z" color="#000" stroke-width="29.8" fill="#fff"/><path d="M95.701 95.703l72.884 72.884v-.985" stroke-width="28" fill="none"/><path d="M168.582 95.703l-72.884 72.884v-.985" stroke-width="28" fill="none"/></g></svg>`;
+    this.closeModalButton.innerHTML = `<span><small class="visually-hidden">${galleryConfig.closeButtonMessage}</small></span>`;
 
     modalDialog.appendChild(this.closeModalButton);
 

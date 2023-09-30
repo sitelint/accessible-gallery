@@ -1,5 +1,5 @@
 .accessible-gallery-modal {
-  background-color: rgba(0, 0, 0, 0.85);
+  background-color: rgba(0, 0, 0, 0.95);
   height: 100vh;
   left: 0;
   position: fixed;
@@ -25,45 +25,104 @@
 
     button {
       align-items: center;
-      background: $color-2;
+      background: none;
       border: 0;
-      border-radius: 0.5rem;
-      box-shadow: 0 0 3px $color-1;
-      color: $color-1;
+      border-radius: 50%;
+      box-sizing: border-box;
+      color: $color-2;
       display: flex;
-      height: 3rem;
+      height: 60px;
+      justify-content: center;
       margin: 0 $margin;
-      padding: $padding $padding-lm;
+      padding: 0.5rem;
+      position: relative;
+      width: 60px;
+
+      span {
+        align-items: center;
+        background: $color-1;
+        border-radius: 50%;
+        display: flex;
+        height: 30px;
+        justify-content: center;
+        position: relative;
+        width: 30px;
+
+        &::after {
+          content: "\2794" / "";
+          display: block;
+          font-family: system-ui;
+          font-size: 15px;
+          font-weight: 400;
+          height: 15px;
+          line-height: 15px;
+          position: absolute;
+          width: 15px;
+        }
+      }
 
       &:nth-of-type(1) {
         margin-right: 2rem;
+
+        span {
+          &::after {
+            transform: rotate(180deg);
+          }
+        }
       }
 
       &:focus,
       &:hover {
-        background: $color-1;
-        box-shadow: 0 0 10px $color-2;
-        color: $color-2;
-        outline: 0;
+
+        span {
+          outline-color: $color-1;
+          outline-style: auto;
+          outline-width: 1px;
+
+          @supports (outline-color: -webkit-focus-ring-color) {
+            outline-color: -webkit-focus-ring-color;
+          }
+        }
       }
     }
   }
 
   &__close-button {
-    background: none;
+    background: $color-1;
     border: 0;
+    border-radius: 50%;
+    height: 30px;
+    padding: 0;
     position: absolute;
-    right: 4px;
-    top: 4px;
+    right: 1rem;
+    top: 1rem;
+    width: 30px;
 
     @include rtl {
       left: 4px;
       right: initial;
     }
 
-    svg {
-      height: 2.5rem;
-      width: 2.5rem;
+    span {
+      align-items: center;
+      display: flex;
+      height: 30px;
+      justify-content: center;
+      padding: 0;
+      position: relative;
+      width: 30px;
+
+      &::after {
+        content: "\2717" / "";
+        display: block;
+        font-family: system-ui;
+        font-size: 15px;
+        font-weight: 700;
+        height: 15px;
+        line-height: 15px;
+        position: absolute;
+        width: 15px;
+      }
     }
 
     &:focus,
@@ -79,7 +138,10 @@
   }
 
   &__inner-container {
+    align-items: flex-start;
+    display: flex;
     height: 100%;
+    justify-content: center;
     position: relative;
     width: 100%;
 
@@ -88,15 +150,12 @@
       background: $color-2;
       display: flex;
       justify-content: center;
-      left: 50%;
-      max-height: 98%;
-      position: absolute;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      width: 98%;
+      max-height: 100%;
+      width: 100%;
 
       @include media-breakpoint-up(lg) {
-        height: 90%;
+        height: calc(100% - 120px);
+        margin-top: 20px;
         width: auto;
 
         @supports (width: max-content) {
@@ -115,10 +174,46 @@
         box-shadow: 0 0 8px $color-2;
         display: block;
         margin: 0 auto;
-        max-height: 100%;
-        max-width: 100%;
+        max-height: 99%;
+        max-width: 99%;
         object-fit: contain;
         object-position: center;
+      }
+    }
+
+    &__thumbnails {
+      align-items: center;
+      bottom: 16px;
+      display: flex;
+      height: 64px;
+      justify-content: center;
+      left: 0;
+      overflow-x: auto;
+      position: absolute;
+      width: 100%;
+
+      ul {
+        display: grid;
+        gap: 0 10px;
+        grid-auto-flow: column;
+        grid-auto-columns: max-content;
+        grid-template-rows: 1fr;
+        height: 100%;
+        list-style: none;
+        margin: 0;
+        overflow-x: auto;
+        padding: 0;
+
+        li {
+          padding: 0;
+          width: 64px;
+
+          img {
+            height: 100%;
+            object-fit: cover;
+            width: 100%;
+          }
+        }
       }
     }
 

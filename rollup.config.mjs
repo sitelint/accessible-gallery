@@ -17,7 +17,7 @@ const defaults = {
 const override = {
   compilerOptions: {
     declaration: false,
-    module: 'es6'
+    module: 'es2020'
   }
 };
 
