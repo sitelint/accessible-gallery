@@ -17,7 +17,7 @@ export default class AccessibleGallery {
   private showLoadingMessageTimeout: number | undefined;
 
   private galleryContainer!: HTMLElement;
-  private currentGalleryItem!: HTMLImageElement;
+  private currentGalleryItem!: HTMLLIElement;
   private currentGalleryItemIndex!: number;
   private allGalleryItems!: any[];
 
@@ -68,8 +68,15 @@ export default class AccessibleGallery {
       return;
     }
 
-    const modalDialogImageContainer: HTMLElement = (event.target as Element).closest('#accessible_gallery_modal_inner_with_image')!;
-    const actionButtonsContainer: HTMLElement = (event.target as Element).closest('#accessible_gallery_actions')!;
+    const modalDialogImageContainer: HTMLElement | null = (event.target as Element).closest('#accessible_gallery_modal_inner_with_image');
+    const actionButtonsContainer: HTMLElement | null = (event.target as Element).closest('#accessible_gallery_actions');
+    const thumbnailImage: HTMLElement | null = (event.target as Element).closest('[data-accessible-gallery-link-id]');
+
+    if (thumbnailImage) {
+      event.preventDefault();
+
+      return;
+    }
 
     if (modalDialogImageContainer === null && actionButtonsContainer === null) {
       this.closeDialog();
@@ -395,12 +402,13 @@ export default class AccessibleGallery {
 
     const createThumbnail = (image: HTMLImageElement) => {
       const thumbnailSrc: string | null = image.getAttribute('data-accessible-gallery-thumbnail');
+      const link: HTMLAnchorElement = image.closest('[data-accessible-gallery-link]')!;
 
       if (thumbnailSrc === null) {
         return;
       }
 
-      thumbnailsList += `<li><img src="${thumbnailSrc}" alt="${image.alt} thumbnail"></li>`;
+      thumbnailsList += `<li><a href="${image.src}" data-accessible-gallery-link-id="${link.dataset.accessibleGalleryLinkId}"><img src="${thumbnailSrc}" alt="${image.alt} thumbnail"></a></li>`;
     };
 
     thumbnails.forEach(createThumbnail);
@@ -467,8 +475,57 @@ export default class AccessibleGallery {
     }
   }
 
+  private findGalleryItemIndex(clickedItem: HTMLElement): void {
+    this.currentGalleryItemIndex = this.allGalleryItems.findIndex((item: any) => {
+      return item === clickedItem;
+    });
+  }
+
+  private showOriginalImageFromThumbnail(targetThumbail: HTMLAnchorElement): void {
+    const targetImageLink: HTMLAnchorElement = document.querySelector(`[data-accessible-gallery-link-id="${targetThumbail.dataset.accessibleGalleryLinkId}"]`)!;
+    const targetImageLiItem: HTMLLIElement = targetImageLink.closest('[data-accessible-gallery-item]')!;
+
+    this.findGalleryItemIndex(targetImageLiItem);
+
+    const link: HTMLAnchorElement = this.allGalleryItems[this.currentGalleryItemIndex].querySelector('[data-accessible-gallery-link]');
+    const linkThumbnail: HTMLImageElement = link.querySelector('img')!;
+    const nextLinkThumbnailImage: HTMLImageElement = this.currentGalleryItem.querySelector('img')!;
+
+    const alt: string | null = nextLinkThumbnailImage.getAttribute('alt');
+    const isInlineImage: boolean = this.isInlineImage(linkThumbnail.src);
+
+    this.imageReference?.remove();
+    this.imageReference = document.createElement('img');
+    this.imageReference.id = 'accessible_gallery_image';
+    this.imageReference.alt = alt ?? '';
+    this.imageReference.src = isInlineImage ? linkThumbnail.src : link.href;
+
+    this.modalInnerContainerWithImage.appendChild(this.imageReference);
+
+    this.createLoadingMessage(linkThumbnail.alt, isInlineImage);
+
+    this.imageReference.addEventListener(
+      'load',
+      this.removeLoadingMessage.bind(this),
+      {
+        once: true
+      });
+
+    this.setCursorToProgress();
+    this.removeCursorProgressOnImageLoadedOrError();
+  }
+
   private handleOpenAction(event: Event): void {
     const target: HTMLAnchorElement | null = (event.target as Element).closest('[data-accessible-gallery-link]');
+    const targetThumbail: HTMLAnchorElement | null = (event.target as Element).closest('[data-accessible-gallery-link-id]');
+
+    if (target === null && targetThumbail) {
+
+      event.preventDefault();
+      this.showOriginalImageFromThumbnail(targetThumbail);
+
+      return;
+    }
 
     if (target === null) {
       return;
@@ -487,11 +544,17 @@ export default class AccessibleGallery {
       this.galleryContainer.querySelectorAll('[data-accessible-gallery-item]')
     );
 
+    const addUniqueDomId = (galleryItem: HTMLLIElement): void => {
+      const galleryLink: HTMLAnchorElement = galleryItem.querySelector('[data-accessible-gallery-link]')!;
+
+      galleryLink.dataset.accessibleGalleryLinkId = CommonUtilities.createUniqueDOMId();
+    };
+
+    this.allGalleryItems.forEach(addUniqueDomId);
+
     const clickedItem: HTMLElement = target.closest('[data-accessible-gallery-item]')!;
 
-    this.currentGalleryItemIndex = this.allGalleryItems.findIndex((item: any) => {
-      return item === clickedItem;
-    });
+    this.findGalleryItemIndex(clickedItem);
 
     this.showImage(target);
 

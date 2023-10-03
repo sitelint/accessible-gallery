@@ -73,7 +73,6 @@
 
       &:focus,
       &:hover {
-
         span {
           outline-color: $color-1;
           outline-style: auto;
@@ -205,13 +204,28 @@
         padding: 0;
 
         li {
+          height: 64px;
           padding: 0;
           width: 64px;
 
-          img {
-            height: 100%;
-            object-fit: cover;
-            width: 100%;
+          a {
+            display: block;
+            height: 64px;
+            width: 64px;
+
+            &:focus,
+            &:hover {
+              outline-color: $color-1;
+              outline-offset: -2px;
+              outline-style: auto;
+              outline-width: 1px;
+            }
+
+            img {
+              height: 100%;
+              object-fit: cover;
+              width: 100%;
+            }
           }
         }
       }

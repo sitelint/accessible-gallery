@@ -1,3 +1,5 @@
+@use "sass:color";
+
 ##{$name-space} {
   button {
     background-color: $color-2;
@@ -8,8 +10,8 @@
 
     &:focus,
     &:hover {
-      background-color: darken($color-2, 10%);
-      border-color: darken($color-2, 10%);
+      background-color: color.adjust($color-2, $lightness: -10%);
+      border-color: color.adjust($color-2, $lightness: 10%);
     }
   }
 }

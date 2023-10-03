@@ -124,4 +124,21 @@ export class CommonUtilities {
 
     document.body.classList.add('accessible-gallery-stop-scrolling');
   }
+
+  public static getRandomString(): string {
+    return Math.random().toString(36)
+      .substring(2);
+  }
+
+  public static createUniqueDOMId(preferredId?: string | undefined): string {
+    let createdId: string = typeof preferredId === 'string' ? preferredId : CommonUtilities.getRandomString();
+
+    if (document.getElementById(createdId) === null) {
+      while (document.getElementById(createdId)) {
+        createdId = this.getRandomString();
+      }
+    }
+
+    return createdId;
+  }
 }

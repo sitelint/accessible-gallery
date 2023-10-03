@@ -42,6 +42,8 @@ declare class AccessibleGallery {
     private setupAllEventListeners;
     private showImage;
     private handleKeyboardAction;
+    private findGalleryItemIndex;
+    private showOriginalImageFromThumbnail;
     private handleOpenAction;
     private applyActions;
     init(): void;
