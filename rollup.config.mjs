@@ -17,7 +17,7 @@ const defaults = {
 const override = {
   compilerOptions: {
     declaration: false,
-    module: 'es2022'
+    module: 'es2020'
   }
 };
 
