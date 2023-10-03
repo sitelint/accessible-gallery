@@ -347,6 +347,33 @@ export default class AccessibleGallery {
     document.addEventListener('swiped-right', this.handleSwipeRightRef);
   }
 
+  private createThumbnailsList(): void {
+    const thumbnails: HTMLImageElement[] = Array.from(this.galleryContainer.querySelectorAll('[data-accessible-gallery-thumbnail]'));
+
+    if (thumbnails.length === 0) {
+      return;
+    }
+
+    let thumbnailsList: string = '<ul>';
+
+    const createThumbnail = (image: HTMLImageElement) => {
+      const thumbnailSrc: string | null = image.getAttribute('data-accessible-gallery-thumbnail');
+      const link: HTMLAnchorElement = image.closest('[data-accessible-gallery-link]')!;
+
+      if (thumbnailSrc === null) {
+        return;
+      }
+
+      thumbnailsList += `<li><a href="${image.src}" data-accessible-gallery-link-id="${link.dataset.accessibleGalleryLinkId}"><img src="${thumbnailSrc}" alt="${image.alt} thumbnail"></a></li>`;
+    };
+
+    thumbnails.forEach(createThumbnail);
+
+    thumbnailsList += '</ul>';
+
+    this.modalInnerContainerWithThumbnails.insertAdjacentHTML('afterbegin', thumbnailsList);
+  }
+
   private showImage(target: HTMLAnchorElement) {
     this.currentGalleryItem = target.closest('[data-accessible-gallery-item]')!;
 
@@ -397,26 +424,7 @@ export default class AccessibleGallery {
         once: true
       });
 
-    const thumbnails: HTMLImageElement[] = Array.from(this.galleryContainer.querySelectorAll('[data-accessible-gallery-thumbnail]'));
-    let thumbnailsList: string = '<ul>';
-
-    const createThumbnail = (image: HTMLImageElement) => {
-      const thumbnailSrc: string | null = image.getAttribute('data-accessible-gallery-thumbnail');
-      const link: HTMLAnchorElement = image.closest('[data-accessible-gallery-link]')!;
-
-      if (thumbnailSrc === null) {
-        return;
-      }
-
-      thumbnailsList += `<li><a href="${image.src}" data-accessible-gallery-link-id="${link.dataset.accessibleGalleryLinkId}"><img src="${thumbnailSrc}" alt="${image.alt} thumbnail"></a></li>`;
-    };
-
-    thumbnails.forEach(createThumbnail);
-
-    thumbnailsList += '</ul>';
-
-    this.modalInnerContainerWithThumbnails.insertAdjacentHTML('afterbegin', thumbnailsList);
-
+    this.createThumbnailsList();
     this.createLoadingMessageContainer();
     this.createLoadingMessage(this.imageReference.alt, isInlineImage);
 

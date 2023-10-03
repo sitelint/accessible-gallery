@@ -40,6 +40,7 @@ declare class AccessibleGallery {
     private createLoadingMessage;
     private removeAllEventListeners;
     private setupAllEventListeners;
+    private createThumbnailsList;
     private showImage;
     private handleKeyboardAction;
     private findGalleryItemIndex;
