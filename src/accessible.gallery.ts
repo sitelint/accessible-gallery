@@ -364,7 +364,7 @@ export default class AccessibleGallery {
         return;
       }
 
-      thumbnailsList += `<li><a href="${image.src}" data-accessible-gallery-link-id="${link.dataset.accessibleGalleryLinkId}"><img src="${thumbnailSrc}" alt="${image.alt} thumbnail"></a></li>`;
+      thumbnailsList += `<li><a href="${image.src}" data-accessible-gallery-link-id="${link.dataset.accessibleGalleryLinkId}"><img src="${thumbnailSrc || image.src}" alt="${image.alt} thumbnail"></a></li>`;
     };
 
     thumbnails.forEach(createThumbnail);

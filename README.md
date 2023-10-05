@@ -22,20 +22,19 @@ npm install @sitelintcode/accessible-gallery --save
 
       <li class="accessible-gallery__item" data-accessible-gallery-item>
         <a href="#no_image" data-accessible-gallery-link>
-          <img loading="lazy" alt="Placeholder"
-            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjOHPmzH8ACDADZKt3GNsAAAAASUVORK5CYII=" />
+          <img loading="lazy" alt="Placeholder" data-accessible-gallery-thumbnail="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjOHPmzH8ACDADZKt3GNsAAAAASUVORK5CYII=" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjOHPmzH8ACDADZKt3GNsAAAAASUVORK5CYII=">
         </a>
       </li>
 
       <li class="accessible-gallery__item" data-accessible-gallery-item>
         <a href="images/castelmezzano-1979546_1920.jpeg" data-accessible-gallery-link>
-          <img loading="lazy" alt="Castelmezzano by night" src="images/castelmezzano-1979546_1920_thumbnail.jpeg" />
+          <img loading="lazy" alt="Castelmezzano by night" src="images/castelmezzano-1979546_1920_thumbnail.jpeg" data-accessible-gallery-thumbnail="images/castelmezzano-1979546_1920_thumbnail.jpeg">
         </a>
       </li>
 
       <li class="accessible-gallery__item" data-accessible-gallery-item>
         <a href="images/sunset-3325080_1920.jpeg" data-accessible-gallery-link>
-          <img loading="lazy" alt="Sunset in mountains" src="images/sunset-3325080_1920_thumbnail.jpeg" />
+          <img loading="lazy" alt="Sunset in mountains" src="images/sunset-3325080_1920_thumbnail.jpeg" data-accessible-gallery-thumbnail="images/sunset-3325080_1920_thumbnail.jpeg">
         </a>
       </li>
 
@@ -70,6 +69,8 @@ npm install @sitelintcode/accessible-gallery --save
 
 ## Options
 
+### Localisation
+
 Optionally you may want to set custom messages, e.g. for localisation purpose. An attribute `data-accessible-gallery-config` contains config for all strings.
 
 ```json
@@ -82,8 +83,17 @@ Optionally you may want to set custom messages, e.g. for localisation purpose. A
   "closeButton": "Close dialog"
 }
 ```
-
 **Note**: above config is being stored as a valid JSON string under attribute `data-accessible-gallery-config`.
+
+### Mini thumbnails (tiny image preview)
+
+The `data-accessible-gallery-thumbnail` attribute allow you to specify a custom small thumbnail generated at the very bottom of the page. Keep the value empty when you want to pick the image `src`.
+
+#### Examples
+
+This `<img loading="lazy" alt="Castelmezzano by night" src="images/castelmezzano-1979546_1920_thumbnail.jpeg" data-accessible-gallery-thumbnail="images/castelmezzano-1979546_1920_bottom_thumbnail.jpeg">` will pick `images/castelmezzano-1979546_1920_bottom_thumbnail.jpeg` when rendering mini thumbnails at the very bottom of the page.
+
+This `<img loading="lazy" alt="Castelmezzano by night" src="images/castelmezzano-1979546_1920_thumbnail.jpeg" data-accessible-gallery-thumbnail>` will pick `images/castelmezzano-1979546_1920_thumbnail.jpeg` when rendering mini thumbnails at the very bottom of the page.
 
 ### Can I use other languages than english?
 
