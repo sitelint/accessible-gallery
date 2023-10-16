@@ -7,6 +7,11 @@
   width: 100%;
   z-index: 2;
 
+  &:focus {
+    outline: 2px dotted $color-1;
+    outline-offset: -2px;
+  }
+
   &__actions {
     display: flex;
     height: 1px;
@@ -16,7 +21,7 @@
     width: 100%;
 
     @include media-breakpoint-down(sm) {
-      bottom: 8rem;
+      bottom: 160px;
     }
 
     @include media-breakpoint-up(md) {
@@ -143,6 +148,10 @@
     justify-content: center;
     position: relative;
     width: 100%;
+
+    @include media-breakpoint-down(sm) {
+      align-items: center;
+    }
 
     &__image {
       align-items: center;

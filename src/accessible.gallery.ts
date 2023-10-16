@@ -383,11 +383,11 @@ export default class AccessibleGallery {
 
     this.restoreFocusToElement = target;
 
-    modalDialog.innerHTML = '<h2 class="visually-hidden" id="accessible_gallery_heading"></h2><div id="accessible_gallery_actions" class="accessible-gallery-modal__actions" tabindex="-1"><button type="button" class="accessible-gallery-modal__previous-image" id="accessible_gallery_modal_previous_image"><span><small class="visually-hidden"></small></span></button><button type="button" class="accessible-gallery-modal__next-image" id="accessible_gallery_modal_next_image"><span><small class="visually-hidden"></small></span></button></div><div id="accessible_gallery_modal_inner_container" class="accessible-gallery-modal__inner-container"><div id="accessible_gallery_modal_inner_with_image" class="accessible-gallery-modal__inner-container__image"></div><div id="accessible_gallery_modal_inner_with_thumbnails" class="accessible-gallery-modal__inner-container__thumbnails"></div></div>';
+    modalDialog.innerHTML = '<h2 class="visually-hidden" id="accessible_gallery_heading"></h2><nav id="accessible_gallery_actions" class="accessible-gallery-modal__actions"" aria-label="Go to next or previus image"><button type="button" class="accessible-gallery-modal__previous-image" id="accessible_gallery_modal_previous_image"><span><small class="visually-hidden"></small></span></button><button type="button" class="accessible-gallery-modal__next-image" id="accessible_gallery_modal_next_image"><span><small class="visually-hidden"></small></span></button></nav><div id="accessible_gallery_modal_inner_container" class="accessible-gallery-modal__inner-container"><div id="accessible_gallery_modal_inner_with_image" class="accessible-gallery-modal__inner-container__image"></div><div id="accessible_gallery_modal_inner_with_thumbnails" class="accessible-gallery-modal__inner-container__thumbnails"></div></div>';
 
     modalDialog.id = 'accessible_gallery_modal';
     modalDialog.className = 'accessible-gallery-modal';
-    modalDialog.tabIndex = -1;
+    modalDialog.setAttribute('tabindex', '-1');
     modalDialog.setAttribute('role', 'dialog');
     modalDialog.setAttribute('aria-labelledby', 'accessible_gallery_heading');
 
