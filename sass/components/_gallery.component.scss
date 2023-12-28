@@ -1,5 +1,5 @@
 .accessible-gallery-modal {
-  background-color: rgba(0, 0, 0, 0.95);
+  background-color: rgba(0 0 0 / 95%);
   height: 100vh;
   left: 0;
   position: fixed;
@@ -25,7 +25,7 @@
     }
 
     @include media-breakpoint-up(md) {
-      @include center();
+      @include center;
     }
 
     button {
@@ -79,9 +79,7 @@
       &:focus,
       &:hover {
         span {
-          outline-color: $color-1;
-          outline-style: auto;
-          outline-width: 1px;
+          outline: 1px auto $color-1;
 
           @supports (outline-color: -webkit-focus-ring-color) {
             outline-color: -webkit-focus-ring-color;
@@ -131,9 +129,7 @@
 
     &:focus,
     &:hover {
-      outline-color: $color-1;
-      outline-style: auto;
-      outline-width: 1px;
+      outline: 1px auto $color-1;
 
       @supports (outline-color: -webkit-focus-ring-color) {
         outline-color: -webkit-focus-ring-color;
@@ -224,10 +220,8 @@
 
             &:focus,
             &:hover {
-              outline-color: $color-1;
               outline-offset: -2px;
-              outline-style: auto;
-              outline-width: 1px;
+              outline: 1px auto $color-1;
             }
 
             img {
@@ -241,7 +235,7 @@
     }
 
     span {
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0 0 0 / 70%);
       color: $color-1;
       display: inline-block;
       left: 0;
@@ -254,6 +248,7 @@
 
       @include media-breakpoint-up(md) {
         @include center(true, false);
+
         bottom: 2rem;
         top: auto;
       }
