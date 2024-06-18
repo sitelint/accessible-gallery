@@ -161,9 +161,8 @@ export default class AccessibleGallery {
 
     const link: HTMLAnchorElement = this.allGalleryItems[this.currentGalleryItemIndex].querySelector('[data-accessible-gallery-link]');
     const linkThumbnail: HTMLImageElement = link.querySelector('img')!;
-    const nextLinkThumbnailImage: HTMLImageElement = this.currentGalleryItem.querySelector('img')!;
 
-    const alt: string | null = nextLinkThumbnailImage.getAttribute('alt');
+    const alt: string | null = linkThumbnail.getAttribute('alt');
     const isInlineImage: boolean = this.isInlineImage(linkThumbnail.src);
 
     this.imageReference?.remove();
@@ -197,9 +196,8 @@ export default class AccessibleGallery {
 
     const link: HTMLAnchorElement = this.allGalleryItems[this.currentGalleryItemIndex].querySelector('[data-accessible-gallery-link]');
     const linkThumbnail: HTMLImageElement = link.querySelector('img')!;
-    const previousLinkThumbnailImage: HTMLImageElement = this.currentGalleryItem.querySelector('img')!;
 
-    const alt: string | null = previousLinkThumbnailImage.getAttribute('alt');
+    const alt: string | null = linkThumbnail.getAttribute('alt');
     const isInlineImage: boolean = this.isInlineImage(linkThumbnail.src);
 
     this.imageReference?.remove();
@@ -399,9 +397,9 @@ export default class AccessibleGallery {
 
     modalActionsContainer.style.zIndex = String(highestZindex + 1);
 
-    Array.from(modalActionsContainer.querySelectorAll('button')).forEach((button: HTMLButtonElement): void => {
+    for (const button of Array.from(modalActionsContainer.querySelectorAll('button'))) {
       button.style.zIndex = String(highestZindex + 2);
-    });
+    }
 
     this.modalInnerContainer = modalDialog.querySelector('#accessible_gallery_modal_inner_container')!;
     this.modalInnerContainerWithImage = modalDialog.querySelector('#accessible_gallery_modal_inner_with_image')!;
