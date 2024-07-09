@@ -135,7 +135,7 @@ export class CommonUtilities {
 
     if (document.getElementById(createdId) === null) {
       while (document.getElementById(createdId)) {
-        createdId = this.getRandomString();
+        createdId = CommonUtilities.getRandomString();
       }
     }
 
