@@ -1,7 +1,7 @@
 import 'swiped-events';
 
 import styles from '../dist/styles.bundle.css';
-import { IAccessibleGalleryConfig } from './interfaces/gallery.interfaces';
+import type { IAccessibleGalleryConfig } from './interfaces/gallery.interfaces';
 import { CommonUtilities } from './utilities/common.utilities';
 
 export default class AccessibleGallery {
@@ -9,6 +9,7 @@ export default class AccessibleGallery {
   private previousButton!: HTMLElement;
   private nextButton!: HTMLElement;
   private imageReference: HTMLImageElement | null;
+  private imageDescriptionReference: HTMLOutputElement | null;
   private closeModalButton!: HTMLButtonElement;
   private modalInnerContainer!: Element;
   private modalInnerContainerWithImage!: Element;
@@ -30,6 +31,7 @@ export default class AccessibleGallery {
 
   constructor() {
     this.imageReference = null;
+    this.imageDescriptionReference = null;
   }
 
   private getGalleryConfig(): IAccessibleGalleryConfig {
@@ -173,6 +175,8 @@ export default class AccessibleGallery {
 
     this.modalInnerContainerWithImage.appendChild(this.imageReference);
 
+    this.imageDescriptionReference!.textContent = alt ?? '';
+
     this.createLoadingMessage(linkThumbnail.alt, isInlineImage);
 
     this.imageReference.addEventListener(
@@ -207,6 +211,8 @@ export default class AccessibleGallery {
     this.imageReference.src = this.isInlineImage(linkThumbnail.src) ? linkThumbnail.src : link.href;
 
     this.modalInnerContainerWithImage.appendChild(this.imageReference);
+
+    this.imageDescriptionReference!.textContent = alt ?? '';
 
     this.createLoadingMessage(linkThumbnail.alt, isInlineImage);
 
@@ -414,6 +420,11 @@ export default class AccessibleGallery {
     this.imageReference.src = isInlineImage ? thumbnailImage.src : target.href;
 
     this.modalInnerContainerWithImage.appendChild(this.imageReference);
+
+    this.imageDescriptionReference = document.createElement('output');
+    this.imageDescriptionReference.textContent = alt ?? '';
+
+    this.modalInnerContainerWithImage.appendChild(this.imageDescriptionReference);
 
     this.imageReference.addEventListener(
       'load',

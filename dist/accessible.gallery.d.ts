@@ -3,6 +3,7 @@ declare class AccessibleGallery {
     private previousButton;
     private nextButton;
     private imageReference;
+    private imageDescriptionReference;
     private closeModalButton;
     private modalInnerContainer;
     private modalInnerContainerWithImage;
