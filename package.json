@@ -24,7 +24,7 @@
     "sass:prod": "sass ./sass/styles.scss ./dist/styles.bundle.css --source-map --style compressed",
     "watch:dev": "chokidar \"./sass/**/*.scss\" \"./src/**/*.ts\" -c \"npm run build:dev && echo 'Build completed'\"",
     "watch:prod": "chokidar \"./sass/**/*.scss\" \"./src/**/*.ts\" -c \"npm run build:prod && echo 'Build completed'\"",
-    "release": "release-it"
+    "release": "release-it --config release-it.json"
   },
   "publishConfig": {
     "access": "public"

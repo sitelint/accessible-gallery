@@ -44,3 +44,4 @@ pnpm-debug.log
 .eslintcache
 .jest/coverage
 stats
+release-it.json
