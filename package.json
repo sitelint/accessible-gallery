@@ -2,7 +2,7 @@
   "name": "@sitelintcode/accessible-gallery",
   "description": "Create accessible gallery from a given images",
   "author": "Cezary Tomczyk <cezary.tomczyk@gmail.com> (https://www.sitelint.com/)",
-  "version": "1.2.18",
+  "version": "1.2.19",
   "license": "MIT",
   "node": ">=16",
   "main": "dist/accessible.gallery.bundle.js",
