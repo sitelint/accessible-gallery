@@ -229,7 +229,8 @@ export default class AccessibleGallery {
   }
 
   private handleImageNavigationAction(event: Event) {
-    const target = event.target;
+    const nextBtn: Element | null = (event.target as Element).closest('#accessible_gallery_modal_next_image');
+    const prevBtn: Element | null = (event.target as Element).closest('#accessible_gallery_modal_previous_image');
 
     if (event.type === 'keydown') {
       if ((typeof (event as KeyboardEvent).key === 'string' && (event as KeyboardEvent).key !== 'Escape') || (typeof (event as KeyboardEvent).code === 'string' && (event as KeyboardEvent).code !== 'Escape')) {
@@ -237,9 +238,9 @@ export default class AccessibleGallery {
       }
     }
 
-    if ((target as Element).id === 'accessible_gallery_modal_next_image') {
+    if (nextBtn) {
       this.getNextImage();
-    } else {
+    } else if (prevBtn) {
       this.getPreviousImage();
     }
 
