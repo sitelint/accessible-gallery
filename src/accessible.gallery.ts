@@ -5,11 +5,11 @@ import type { IAccessibleGalleryConfig } from './interfaces/gallery.interfaces';
 import { CommonUtilities } from './utilities/common.utilities';
 
 export default class AccessibleGallery {
-  private restoreFocusToElement!: HTMLElement;
   private previousButton!: HTMLElement;
   private nextButton!: HTMLElement;
   private imageReference: HTMLImageElement | null;
-  private imageDescriptionReference: HTMLOutputElement | null;
+  private figureReference: HTMLElement | null;
+  private figCaptionReference: HTMLElement | null;
   private closeModalButton!: HTMLButtonElement;
   private modalInnerContainer!: Element;
   private modalInnerContainerWithImage!: Element;
@@ -18,9 +18,9 @@ export default class AccessibleGallery {
   private showLoadingMessageTimeout: number | undefined;
 
   private galleryContainer!: HTMLElement;
-  private currentGalleryItem!: HTMLLIElement;
   private currentGalleryItemIndex!: number;
   private allGalleryItems!: any[];
+  private allThumbnailButtons!: NodeListOf<HTMLButtonElement>;
 
   private handleKeyboardActionRef: any;
   private handleClickOutsideRef: any;
@@ -28,10 +28,12 @@ export default class AccessibleGallery {
   private handleImageNavigationActionRef: any;
   private handleSwipeLeftRef: any;
   private handleSwipeRightRef: any;
+  private handleThumbnailOpenRef: Map<HTMLButtonElement, (event: Event) => void> = new Map();
 
   constructor() {
     this.imageReference = null;
-    this.imageDescriptionReference = null;
+    this.figureReference = null;
+    this.figCaptionReference = null;
   }
 
   private getGalleryConfig(): IAccessibleGalleryConfig {
@@ -122,7 +124,6 @@ export default class AccessibleGallery {
     }
 
     linkElement = document.createElement('link');
-
     linkElement.rel = 'preload';
     linkElement.as = 'image';
     linkElement.href = href;
@@ -137,9 +138,9 @@ export default class AccessibleGallery {
       nextGalleryItemIndex = 0;
     }
 
-    const galleryLink: HTMLAnchorElement = this.allGalleryItems[nextGalleryItemIndex].querySelector('[data-accessible-gallery-link]');
+    const galleryButton: HTMLButtonElement = this.allGalleryItems[nextGalleryItemIndex].querySelector('[data-accessible-gallery-link]');
 
-    this.preloadImage(galleryLink.href);
+    this.preloadImage(galleryButton.dataset.src || '');
   }
 
   private preloadPreviousNextImage() {
@@ -149,83 +150,33 @@ export default class AccessibleGallery {
       nextGalleryItemIndex = this.allGalleryItems.length - 1;
     }
 
-    const galleryLink: HTMLAnchorElement = this.allGalleryItems[nextGalleryItemIndex].querySelector('[data-accessible-gallery-link]');
+    const galleryButton: HTMLButtonElement = this.allGalleryItems[nextGalleryItemIndex].querySelector('[data-accessible-gallery-link]');
 
-    this.preloadImage(galleryLink.href);
+    this.preloadImage(galleryButton.dataset.src || '');
   }
 
-  private getNextImage() {
-    this.currentGalleryItemIndex += 1;
+  private navigateToImage(index: number): void {
+    const previousIndex = this.currentGalleryItemIndex;
 
-    if (this.currentGalleryItemIndex > (this.allGalleryItems.length - 1)) {
-      this.currentGalleryItemIndex = 0;
+    this.currentGalleryItemIndex = ((index % this.allGalleryItems.length) + this.allGalleryItems.length) % this.allGalleryItems.length;
+
+    const button: HTMLButtonElement = this.allGalleryItems[this.currentGalleryItemIndex].querySelector('[data-accessible-gallery-link]');
+    const buttonThumbnail: HTMLImageElement = button.querySelector('img')!;
+
+    this.createFigureWithImage(buttonThumbnail, button.dataset.src, this.modalInnerContainerWithImage, 'accessible_gallery_image');
+    if (index >= previousIndex) {
+      this.preloadNextNextImage();
+    } else {
+      this.preloadPreviousNextImage();
     }
-
-    const link: HTMLAnchorElement = this.allGalleryItems[this.currentGalleryItemIndex].querySelector('[data-accessible-gallery-link]');
-    const linkThumbnail: HTMLImageElement = link.querySelector('img')!;
-
-    const alt: string | null = linkThumbnail.getAttribute('alt');
-    const isInlineImage: boolean = this.isInlineImage(linkThumbnail.src);
-
-    this.imageReference?.remove();
-    this.imageReference = document.createElement('img');
-    this.imageReference.id = 'accessible_gallery_image';
-    this.imageReference.alt = alt ?? '';
-    this.imageReference.src = isInlineImage ? linkThumbnail.src : link.href;
-
-    this.modalInnerContainerWithImage.appendChild(this.imageReference);
-
-    this.imageDescriptionReference!.textContent = alt ?? '';
-
-    this.createLoadingMessage(linkThumbnail.alt, isInlineImage);
-
-    this.imageReference.addEventListener(
-      'load',
-      this.removeLoadingMessage.bind(this),
-      {
-        once: true
-      });
-
-    this.setCursorToProgress();
-    this.removeCursorProgressOnImageLoadedOrError();
-    this.preloadNextNextImage();
   }
 
-  private getPreviousImage() {
-    this.currentGalleryItemIndex -= 1;
+  private getNextImage(): void {
+    this.navigateToImage(this.currentGalleryItemIndex + 1);
+  }
 
-    if (this.currentGalleryItemIndex < 0) {
-      this.currentGalleryItemIndex = this.allGalleryItems.length - 1;
-    }
-
-    const link: HTMLAnchorElement = this.allGalleryItems[this.currentGalleryItemIndex].querySelector('[data-accessible-gallery-link]');
-    const linkThumbnail: HTMLImageElement = link.querySelector('img')!;
-
-    const alt: string | null = linkThumbnail.getAttribute('alt');
-    const isInlineImage: boolean = this.isInlineImage(linkThumbnail.src);
-
-    this.imageReference?.remove();
-    this.imageReference = document.createElement('img');
-    this.imageReference.id = 'accessible_gallery_image';
-    this.imageReference.alt = alt ?? '';
-    this.imageReference.src = this.isInlineImage(linkThumbnail.src) ? linkThumbnail.src : link.href;
-
-    this.modalInnerContainerWithImage.appendChild(this.imageReference);
-
-    this.imageDescriptionReference!.textContent = alt ?? '';
-
-    this.createLoadingMessage(linkThumbnail.alt, isInlineImage);
-
-    this.imageReference.addEventListener(
-      'load',
-      this.removeLoadingMessage.bind(this),
-      {
-        once: true
-      });
-
-    this.setCursorToProgress();
-    this.removeCursorProgressOnImageLoadedOrError();
-    this.preloadPreviousNextImage();
+  private getPreviousImage(): void {
+    this.navigateToImage(this.currentGalleryItemIndex - 1);
   }
 
   private handleImageNavigationAction(event: Event) {
@@ -256,7 +207,7 @@ export default class AccessibleGallery {
   }
 
   private closeDialog() {
-    const existingModalDialog: HTMLElement | null = document.getElementById('accessible_gallery_modal');
+    const existingModalDialog: HTMLDialogElement | null = document.getElementById('accessible_gallery_modal') as HTMLDialogElement;
 
     this.removeAllEventListeners();
 
@@ -265,16 +216,15 @@ export default class AccessibleGallery {
     }
 
     document.body.classList.remove('accessible-gallery-active');
+    existingModalDialog.close();
 
     existingModalDialog.remove();
     this.loadingMessageContainer.remove();
-
-    CommonUtilities.untrapFromModal();
-
-    this.restoreFocusToElement.focus();
   }
 
   private createLoadingMessageContainer(): void {
+    this.loadingMessageContainer?.remove();
+
     this.loadingMessageContainer = document.createElement('span');
 
     this.loadingMessageContainer.setAttribute('aria-live', 'polite');
@@ -330,6 +280,11 @@ export default class AccessibleGallery {
 
     document.removeEventListener('swiped-right', this.handleSwipeRightRef);
     this.handleSwipeRightRef = null;
+
+    this.handleThumbnailOpenRef.forEach((handler, galleryItemButton) => {
+      galleryItemButton.removeEventListener('click', handler);
+    });
+    this.handleThumbnailOpenRef.clear();
   }
 
   private setupAllEventListeners(): void {
@@ -350,6 +305,15 @@ export default class AccessibleGallery {
 
     this.handleSwipeRightRef = this.handleSwipeRight.bind(this);
     document.addEventListener('swiped-right', this.handleSwipeRightRef);
+
+    this.allThumbnailButtons.forEach((thumbnail) => {
+      const handler = (event: Event) => {
+        this.showOriginalImageFromThumbnail(event.currentTarget as HTMLButtonElement);
+      };
+
+      this.handleThumbnailOpenRef.set(thumbnail, handler);
+      thumbnail.addEventListener('click', handler);
+    });
   }
 
   private createThumbnailsList(): void {
@@ -359,84 +323,82 @@ export default class AccessibleGallery {
       return;
     }
 
-    let thumbnailsList: string = '<ul>';
+    const thumbnailsList: HTMLElement = document.createElement('ul');
 
     const createThumbnail = (image: HTMLImageElement) => {
       const thumbnailSrc: string | null = image.getAttribute('data-accessible-gallery-thumbnail');
-      const link: HTMLAnchorElement = image.closest('[data-accessible-gallery-link]')!;
+      const caption: string | null = image.getAttribute('data-accessible-gallery-item-caption');
+      const galleryLinkButton: HTMLButtonElement = image.closest('[data-accessible-gallery-link]')!;
 
       if (thumbnailSrc === null) {
         return;
       }
+      const li = document.createElement('li');
+      const button = document.createElement('button');
+      const img = document.createElement('img');
 
-      thumbnailsList += `<li><a href="${image.src}" data-accessible-gallery-link-id="${link.dataset.accessibleGalleryLinkId}"><img src="${thumbnailSrc || image.src}" alt="${image.alt} thumbnail"></a></li>`;
+      button.dataset.src = image.src;
+      button.type = 'button';
+      button.dataset.accessibleGalleryLinkId = galleryLinkButton.dataset.accessibleGalleryLinkId;
+
+      img.src = thumbnailSrc || image.src;
+      img.alt = `${image.alt} thumbnail`;
+
+      if (caption) {
+        img.dataset.accessibleGalleryItemCaption = caption;
+      }
+
+      button.appendChild(img);
+      li.appendChild(button);
+      thumbnailsList.appendChild(li);
     };
 
     thumbnails.forEach(createThumbnail);
 
-    thumbnailsList += '</ul>';
-
-    this.modalInnerContainerWithThumbnails.insertAdjacentHTML('afterbegin', thumbnailsList);
+    this.modalInnerContainerWithThumbnails.appendChild(thumbnailsList);
+    this.allThumbnailButtons = this.modalInnerContainerWithThumbnails.querySelectorAll('[data-accessible-gallery-link-id]');
   }
 
-  private showImage(target: HTMLAnchorElement) {
-    this.currentGalleryItem = target.closest('[data-accessible-gallery-item]')!;
-
-    const modalDialog: HTMLDivElement = document.createElement('div');
-    const existingModalDialog: HTMLElement | null = document.getElementById('accessible_gallery_modal');
+  private showImage(target: HTMLButtonElement) {
+    const modalDialog: HTMLDialogElement = document.createElement('dialog');
+    const existingModalDialog: HTMLDialogElement | null = document.getElementById('accessible_gallery_modal') as HTMLDialogElement;
     const thumbnailImage: HTMLImageElement = target.querySelector('img')!;
 
-    this.restoreFocusToElement = target;
-
-    modalDialog.innerHTML = '<h2 class="visually-hidden" id="accessible_gallery_heading"></h2><nav id="accessible_gallery_actions" class="accessible-gallery-modal__actions"" aria-label="Go to next or previus image"><button type="button" class="accessible-gallery-modal__previous-image" id="accessible_gallery_modal_previous_image"><span><small class="visually-hidden"></small></span></button><button type="button" class="accessible-gallery-modal__next-image" id="accessible_gallery_modal_next_image"><span><small class="visually-hidden"></small></span></button></nav><div id="accessible_gallery_modal_inner_container" class="accessible-gallery-modal__inner-container"><div id="accessible_gallery_modal_inner_with_image" class="accessible-gallery-modal__inner-container__image"></div><div id="accessible_gallery_modal_inner_with_thumbnails" class="accessible-gallery-modal__inner-container__thumbnails"></div></div>';
+    modalDialog.innerHTML = '<h2 class="visually-hidden" id="accessible_gallery_heading"></h2>' +
+      '<nav id="accessible_gallery_actions" class="accessible-gallery-modal__actions" aria-label="Go to next or previus image">' +
+        '<button type="button" class="accessible-gallery-modal__previous-image" id="accessible_gallery_modal_previous_image">' +
+          '<span><small class="visually-hidden"></small></span>' +
+        '</button>' +
+        '<button type="button" class="accessible-gallery-modal__next-image" id="accessible_gallery_modal_next_image">' +
+          '<span><small class="visually-hidden"></small></span>' +
+        '</button>' +
+      '</nav>' +
+      '<div id="accessible_gallery_modal_inner_container" class="accessible-gallery-modal__inner-container">' +
+        '<div id="accessible_gallery_modal_inner_with_image" class="accessible-gallery-modal__inner-container__image"></div>' +
+        '<div id="accessible_gallery_modal_inner_with_thumbnails" class="accessible-gallery-modal__inner-container__thumbnails"></div>' +
+      '</div>';
 
     modalDialog.id = 'accessible_gallery_modal';
     modalDialog.className = 'accessible-gallery-modal';
-    modalDialog.setAttribute('tabindex', '-1');
-    modalDialog.setAttribute('role', 'dialog');
     modalDialog.setAttribute('aria-labelledby', 'accessible_gallery_heading');
 
-    const highestZindex: number = CommonUtilities.getHighestZindex();
+    const highestZIndex: number = CommonUtilities.getHighestZindex();
 
-    modalDialog.style.zIndex = String(highestZindex + 1);
+    modalDialog.style.zIndex = String(highestZIndex + 1);
 
     const modalActionsContainer: HTMLElement = modalDialog.querySelector('#accessible_gallery_actions')!;
 
-    modalActionsContainer.style.zIndex = String(highestZindex + 1);
+    modalActionsContainer.style.zIndex = String(highestZIndex + 1);
 
     for (const button of Array.from(modalActionsContainer.querySelectorAll('button'))) {
-      button.style.zIndex = String(highestZindex + 2);
+      button.style.zIndex = String(highestZIndex + 2);
     }
 
     this.modalInnerContainer = modalDialog.querySelector('#accessible_gallery_modal_inner_container')!;
     this.modalInnerContainerWithImage = modalDialog.querySelector('#accessible_gallery_modal_inner_with_image')!;
     this.modalInnerContainerWithThumbnails = modalDialog.querySelector('#accessible_gallery_modal_inner_with_thumbnails')!;
-    this.imageReference = document.createElement('img');
-
-    const alt: string | null = thumbnailImage.getAttribute('alt');
-    const isInlineImage: boolean = this.isInlineImage(thumbnailImage.src);
-
-    this.imageReference.id = 'accessible_gallery_image';
-    this.imageReference.alt = alt ?? '';
-    this.imageReference.src = isInlineImage ? thumbnailImage.src : target.href;
-
-    this.modalInnerContainerWithImage.appendChild(this.imageReference);
-
-    this.imageDescriptionReference = document.createElement('output');
-    this.imageDescriptionReference.textContent = alt ?? '';
-
-    this.modalInnerContainerWithImage.appendChild(this.imageDescriptionReference);
-
-    this.imageReference.addEventListener(
-      'load',
-      this.removeLoadingMessage.bind(this),
-      {
-        once: true
-      });
-
+    this.createFigureWithImage(thumbnailImage, target.dataset.src, this.modalInnerContainerWithImage, 'accessible_gallery_image');
     this.createThumbnailsList();
-    this.createLoadingMessageContainer();
-    this.createLoadingMessage(this.imageReference.alt, isInlineImage);
 
     const galleryConfig: IAccessibleGalleryConfig = this.getGalleryConfig();
 
@@ -469,8 +431,48 @@ export default class AccessibleGallery {
     modalDialogTitleHeading.textContent = galleryConfig.galleryTitle;
 
     window.setTimeout((): void => {
-      modalDialog.focus();
+      modalDialog.showModal();
     }, 500);
+  }
+
+  private createFigureWithImage(image: HTMLImageElement, altSource: string | undefined, appendTarget: Element, imageId: string | null) {
+    window.clearTimeout(this.showLoadingMessageTimeout);
+    this.figureReference?.remove();
+    this.figureReference = document.createElement('figure');
+    this.imageReference = document.createElement('img');
+
+    const alt: string | null = image.getAttribute('alt');
+    const caption: string | null = image.getAttribute('data-accessible-gallery-item-caption');
+    const isInlineImage: boolean = this.isInlineImage(image.src);
+
+    if (imageId) {
+      this.imageReference.id = imageId;
+    }
+    this.imageReference.alt = alt ?? '';
+    this.imageReference.src = isInlineImage ? image.src : (altSource ?? '');
+
+    this.figureReference.appendChild(this.imageReference);
+
+    if (caption) {
+      this.figCaptionReference = document.createElement('figcaption');
+
+      this.figCaptionReference.textContent = caption;
+      this.figureReference.appendChild(this.figCaptionReference);
+    }
+    appendTarget.appendChild(this.figureReference);
+
+    this.imageReference.addEventListener(
+      'load',
+      this.removeLoadingMessage.bind(this),
+      {
+        once: true
+      });
+
+    this.createLoadingMessageContainer();
+    this.createLoadingMessage(this.imageReference.alt, isInlineImage);
+
+    this.setCursorToProgress();
+    this.removeCursorProgressOnImageLoadedOrError();
   }
 
   private handleKeyboardAction(event: KeyboardEvent) {
@@ -499,51 +501,16 @@ export default class AccessibleGallery {
     });
   }
 
-  private showOriginalImageFromThumbnail(targetThumbail: HTMLAnchorElement): void {
-    const targetImageLink: HTMLAnchorElement = document.querySelector(`[data-accessible-gallery-link-id="${targetThumbail.dataset.accessibleGalleryLinkId}"]`)!;
-    const targetImageLiItem: HTMLLIElement = targetImageLink.closest('[data-accessible-gallery-item]')!;
+  private showOriginalImageFromThumbnail(targetThumbnail: HTMLButtonElement): void {
+    const targetImageButton: HTMLButtonElement = document.querySelector(`[data-accessible-gallery-link-id="${targetThumbnail.dataset.accessibleGalleryLinkId}"]`)!;
+    const targetImageLiItem: HTMLLIElement = targetImageButton.closest('[data-accessible-gallery-item]')!;
 
     this.findGalleryItemIndex(targetImageLiItem);
 
-    const link: HTMLAnchorElement = this.allGalleryItems[this.currentGalleryItemIndex].querySelector('[data-accessible-gallery-link]');
-    const linkThumbnail: HTMLImageElement = link.querySelector('img')!;
-    const nextLinkThumbnailImage: HTMLImageElement = this.currentGalleryItem.querySelector('img')!;
-
-    const alt: string | null = nextLinkThumbnailImage.getAttribute('alt');
-    const isInlineImage: boolean = this.isInlineImage(linkThumbnail.src);
-
-    this.imageReference?.remove();
-    this.imageReference = document.createElement('img');
-    this.imageReference.id = 'accessible_gallery_image';
-    this.imageReference.alt = alt ?? '';
-    this.imageReference.src = isInlineImage ? linkThumbnail.src : link.href;
-
-    this.modalInnerContainerWithImage.appendChild(this.imageReference);
-
-    this.createLoadingMessage(linkThumbnail.alt, isInlineImage);
-
-    this.imageReference.addEventListener(
-      'load',
-      this.removeLoadingMessage.bind(this),
-      {
-        once: true
-      });
-
-    this.setCursorToProgress();
-    this.removeCursorProgressOnImageLoadedOrError();
+    this.navigateToImage(this.currentGalleryItemIndex);
   }
 
-  private handleOpenAction(event: Event): void {
-    const target: HTMLAnchorElement | null = (event.target as Element).closest('[data-accessible-gallery-link]');
-    const targetThumbail: HTMLAnchorElement | null = (event.target as Element).closest('[data-accessible-gallery-link-id]');
-
-    if (target === null && targetThumbail) {
-
-      event.preventDefault();
-      this.showOriginalImageFromThumbnail(targetThumbail);
-
-      return;
-    }
+  private handleOpenAction(target: HTMLButtonElement): void {
 
     if (target === null) {
       return;
@@ -553,9 +520,6 @@ export default class AccessibleGallery {
       return;
     }
 
-    event.preventDefault();
-    CommonUtilities.trapInModal();
-
     this.galleryContainer = target.closest('[data-accessible-gallery]')!;
 
     this.allGalleryItems = Array.from(
@@ -563,9 +527,9 @@ export default class AccessibleGallery {
     );
 
     const addUniqueDomId = (galleryItem: HTMLLIElement): void => {
-      const galleryLink: HTMLAnchorElement = galleryItem.querySelector('[data-accessible-gallery-link]')!;
+      const galleryButton: HTMLButtonElement = galleryItem.querySelector('[data-accessible-gallery-link]')!;
 
-      galleryLink.dataset.accessibleGalleryLinkId = CommonUtilities.createUniqueDOMId();
+      galleryButton.dataset.accessibleGalleryLinkId = CommonUtilities.createUniqueDOMId();
     };
 
     this.allGalleryItems.forEach(addUniqueDomId);
@@ -582,7 +546,11 @@ export default class AccessibleGallery {
 
   private applyActions(): void {
     CommonUtilities.createCSS(styles, 'accessible_gallery_styles');
-    document.addEventListener('click', this.handleOpenAction.bind(this));
+    document.querySelectorAll<HTMLButtonElement>('[data-accessible-gallery-link]')?.forEach((button: HTMLButtonElement) => {
+      button.addEventListener('click', () => {
+        this.handleOpenAction(button);
+      });
+    });
   }
 
   public init(): void {

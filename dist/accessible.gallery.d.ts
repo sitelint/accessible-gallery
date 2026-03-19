@@ -1,9 +1,9 @@
 declare class AccessibleGallery {
-    private restoreFocusToElement;
     private previousButton;
     private nextButton;
     private imageReference;
-    private imageDescriptionReference;
+    private figureReference;
+    private figCaptionReference;
     private closeModalButton;
     private modalInnerContainer;
     private modalInnerContainerWithImage;
@@ -11,15 +11,16 @@ declare class AccessibleGallery {
     private loadingMessageContainer;
     private showLoadingMessageTimeout;
     private galleryContainer;
-    private currentGalleryItem;
     private currentGalleryItemIndex;
     private allGalleryItems;
+    private allThumbnailButtons;
     private handleKeyboardActionRef;
     private handleClickOutsideRef;
     private closeDialogRef;
     private handleImageNavigationActionRef;
     private handleSwipeLeftRef;
     private handleSwipeRightRef;
+    private handleThumbnailOpenRef;
     constructor();
     private getGalleryConfig;
     private handleClickOutside;
@@ -30,6 +31,7 @@ declare class AccessibleGallery {
     private preloadImage;
     private preloadNextNextImage;
     private preloadPreviousNextImage;
+    private navigateToImage;
     private getNextImage;
     private getPreviousImage;
     private handleImageNavigationAction;
@@ -43,6 +45,7 @@ declare class AccessibleGallery {
     private setupAllEventListeners;
     private createThumbnailsList;
     private showImage;
+    private createFigureWithImage;
     private handleKeyboardAction;
     private findGalleryItemIndex;
     private showOriginalImageFromThumbnail;

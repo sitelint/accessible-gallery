@@ -1,17 +1,19 @@
 .accessible-gallery-modal {
+  $thumbnail-size: 64px;
+  $nav-btn-size: 60px;
   background-color: rgba(0 0 0 / 95%);
-  height: 100vh;
+  height: 100dvh;
   left: 0;
   position: fixed;
   top: 0;
-  width: 100%;
+  width: 100dvw;
   z-index: 2;
+  padding: $margin;
 
-  &:focus {
+  &:focus-visible {
     outline: 2px dotted $color-1;
     outline-offset: -2px;
   }
-
   &__actions {
     display: flex;
     height: 1px;
@@ -19,12 +21,14 @@
     position: absolute;
     white-space: nowrap;
     width: 100%;
+    left: 0;
 
     @include media-breakpoint-down(sm) {
-      bottom: 160px;
+      height: auto;
+      bottom: calc($thumbnail-size + $margin);
     }
 
-    @include media-breakpoint-up(md) {
+    @include media-breakpoint-up(sm) {
       @include center;
     }
 
@@ -36,12 +40,12 @@
       box-sizing: border-box;
       color: $color-2;
       display: flex;
-      height: 60px;
+      height: $nav-btn-size;
       justify-content: center;
       margin: 0 $margin;
       padding: 0.5rem;
       position: relative;
-      width: 60px;
+      width: $nav-btn-size;
 
       span {
         align-items: center;
@@ -76,13 +80,23 @@
         }
       }
 
-      &:focus,
-      &:hover {
+      &:focus-visible {
         span {
           outline: 1px auto $color-1;
 
           @supports (outline-color: -webkit-focus-ring-color) {
             outline-color: -webkit-focus-ring-color;
+          }
+        }
+      }
+      @media (hover: hover) {
+        &:hover {
+          span {
+            outline: 1px auto $color-1;
+
+            @supports (outline-color: -webkit-focus-ring-color) {
+              outline-color: -webkit-focus-ring-color;
+            }
           }
         }
       }
@@ -127,25 +141,40 @@
       }
     }
 
-    &:focus,
-    &:hover {
+    &:focus-visible {
       outline: 1px auto $color-1;
 
       @supports (outline-color: -webkit-focus-ring-color) {
         outline-color: -webkit-focus-ring-color;
       }
     }
+    @media (hover: hover) {
+      &:hover {
+        outline: 1px auto $color-1;
+
+        @supports (outline-color: -webkit-focus-ring-color) {
+          outline-color: -webkit-focus-ring-color;
+        }
+      }
+    }
   }
 
   &__inner-container {
-    align-items: flex-start;
     display: flex;
     height: 100%;
     justify-content: center;
     position: relative;
     width: 100%;
+    flex-direction: column;
+    //room for close button
+    padding-top: calc(30px + $margin);
+    gap: $margin;
+    box-sizing: border-box;
+    align-items: center;
 
     @include media-breakpoint-down(sm) {
+      //room for navigation buttons
+      gap: $nav-btn-size;
       align-items: center;
     }
 
@@ -154,13 +183,12 @@
       background: $color-2;
       display: flex;
       justify-content: center;
-      max-height: 100%;
       position: relative;
       width: 100%;
+      height: calc(100% - $nav-btn-size - $thumbnail-size);
+      max-width: 100%;
 
       @include media-breakpoint-up(lg) {
-        height: calc(100% - 120px);
-        margin-top: 20px;
         width: auto;
 
         @supports (width: max-content) {
@@ -168,47 +196,51 @@
         }
       }
 
-      @include media-breakpoint-only(md) {
-        height: auto;
-        width: 90%;
-      }
-
       img {
         aspect-ratio: auto;
         background: $color-2;
         box-shadow: 0 0 8px $color-2;
         display: block;
-        margin: 0 auto;
         max-height: 99%;
         max-width: 99%;
         object-fit: contain;
         object-position: center;
       }
-
-      output {
+      figure {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        margin: 0;
+        justify-content: center;
+      }
+      figcaption {
         background: rgba(0, 0, 0, 0.75);
         border-radius: 0.25rem;
         bottom: 1rem;
         color: $color-1;
         font-size: 1.1rem;
-        line-height: 2rem;
-        margin: 0 $margin;
-        padding: $padding-xs $padding;
+        line-height: 1.2;
+        margin: 0;
+        padding: $padding-xs $padding * 0.5;
         position: absolute;
-        text-wrap: balance;
+        max-width: calc(100% - 4 * $margin);
+        left: 50%;
+        transform: translateX(-50%);
+        @supports (width: max-content) {
+          width: max-content;
+        }
       }
     }
 
     &__thumbnails {
       align-items: center;
-      bottom: 16px;
       display: flex;
-      height: 64px;
+      height: $thumbnail-size;
       justify-content: center;
-      left: 0;
       overflow-x: auto;
-      position: absolute;
       width: 100%;
+      flex: 0 0 auto;
 
       ul {
         display: grid;
@@ -223,19 +255,30 @@
         padding: 0;
 
         li {
-          height: 64px;
+          height: $thumbnail-size;
           padding: 0;
-          width: 64px;
+          width: $thumbnail-size;
 
-          a {
+          button {
             display: block;
-            height: 64px;
-            width: 64px;
+            height: 100%;
+            width: 100%;
+            padding: 0;
+            margin: 0;
+            background-color: transparent;
+            border: none;
+            border-radius: 0;
+            line-height: 0;
 
-            &:focus,
-            &:hover {
+            &:focus-visible {
               outline-offset: -2px;
               outline: 1px auto $color-1;
+            }
+            @media (hover: hover) {
+              &:hover {
+                outline-offset: -2px;
+                outline: 1px auto $color-1;
+              }
             }
 
             img {
@@ -248,24 +291,18 @@
       }
     }
 
+    // loading info
     span {
       background: rgba(0 0 0 / 70%);
       color: $color-1;
       display: inline-block;
-      left: 0;
       max-width: 100%;
       padding: 1rem;
       position: absolute;
       white-space: nowrap;
       white-space: pre-line;
       z-index: -1;
-
-      @include media-breakpoint-up(md) {
-        @include center(true, false);
-
-        bottom: 2rem;
-        top: auto;
-      }
+      @include center(true, true);
 
       &:empty {
         display: none;

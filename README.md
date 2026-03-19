@@ -22,7 +22,7 @@ npm install @sitelintcode/accessible-gallery --save
 
       <li class="accessible-gallery__item" data-accessible-gallery-item>
         <a href="#no_image" data-accessible-gallery-link>
-          <img loading="lazy" alt="Placeholder" data-accessible-gallery-thumbnail="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjOHPmzH8ACDADZKt3GNsAAAAASUVORK5CYII=" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjOHPmzH8ACDADZKt3GNsAAAAASUVORK5CYII=">
+          <img loading="lazy" alt="Placeholder" data-accessible-gallery-item-caption="Caption to be displayed in gallery as figcaption" data-accessible-gallery-thumbnail="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjOHPmzH8ACDADZKt3GNsAAAAASUVORK5CYII=" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjOHPmzH8ACDADZKt3GNsAAAAASUVORK5CYII=">
         </a>
       </li>
 
