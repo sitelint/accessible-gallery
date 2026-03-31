@@ -7,7 +7,7 @@
   "node": ">=16",
   "main": "dist/accessible.gallery.bundle.js",
   "files": [
-    "dist/{js}/*.{js,map}"
+    "dist/"
   ],
   "types": "dist/accessible.gallery.d.ts",
   "scripts": {
