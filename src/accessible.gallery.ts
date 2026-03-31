@@ -53,7 +53,7 @@ export default class AccessibleGallery {
 
     try {
       galleryConfig = JSON.parse(customConfig);
-    } catch (e) {
+    } catch {
       return galleryConfig;
     }
 
@@ -138,7 +138,7 @@ export default class AccessibleGallery {
       nextGalleryItemIndex = 0;
     }
 
-    const galleryButton: HTMLButtonElement = this.allGalleryItems[nextGalleryItemIndex].querySelector('[data-accessible-gallery-link]');
+    const galleryButton: HTMLButtonElement = this.allGalleryItems[nextGalleryItemIndex as keyof typeof this.allGalleryItems].querySelector('[data-accessible-gallery-link]');
 
     this.preloadImage(galleryButton.dataset.src || '');
   }
@@ -150,7 +150,7 @@ export default class AccessibleGallery {
       nextGalleryItemIndex = this.allGalleryItems.length - 1;
     }
 
-    const galleryButton: HTMLButtonElement = this.allGalleryItems[nextGalleryItemIndex].querySelector('[data-accessible-gallery-link]');
+    const galleryButton: HTMLButtonElement = this.allGalleryItems[nextGalleryItemIndex as keyof typeof this.allGalleryItems].querySelector('[data-accessible-gallery-link]');
 
     this.preloadImage(galleryButton.dataset.src || '');
   }
